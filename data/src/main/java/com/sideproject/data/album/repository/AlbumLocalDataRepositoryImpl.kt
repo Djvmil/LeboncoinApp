@@ -1,10 +1,17 @@
 package com.sideproject.data.album.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.sideproject.data.album.entity.AlbumEntity
 import com.sideproject.data.album.entity.toAlbum
 import com.sideproject.data.album.entity.toAlbumEntity
 import com.sideproject.data.album.local.dao.AlbumDao
 import com.sideproject.domain.models.album.Album
 import com.sideproject.domain.repository.album.AlbumLocalRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AlbumLocalDataRepositoryImpl @Inject constructor(
@@ -19,14 +26,23 @@ class AlbumLocalDataRepositoryImpl @Inject constructor(
         return albumDao.findAlbum(id).toAlbum()
     }
 
-    override suspend fun getAlbums(): List<Album> {
-        val albums = albumDao.getAlbums()
-        return albums.map {
-            it.toAlbum()
-        }
+    override suspend fun isEmpty(): Boolean {
+        return albumDao.isEmpty()
     }
 
-    override suspend fun getAlbumByPage(page: Int): List<Album> {
-        TODO("Not yet implemented")
+    override fun getAlbums(): Flow<PagingData<Album>> {
+        return Pager(
+            PagingConfig(
+                pageSize = 20,
+                initialLoadSize = 20,
+            ),
+        ) {
+            albumDao.getAlbums()
+        }.flow
+            .map { pagingData: PagingData<AlbumEntity> ->
+                pagingData.map { albumEntity ->
+                    albumEntity.toAlbum()
+                }
+            }
     }
 }

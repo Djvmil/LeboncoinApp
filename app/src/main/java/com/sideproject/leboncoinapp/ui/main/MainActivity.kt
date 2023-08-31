@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -39,12 +41,11 @@ class MainActivity : ComponentActivity() {
             splashScreen = installSplashScreen()
         } else {
             // use old approach
-            setTheme(R.style.Theme_LeboncoinApp)
+            setTheme(R.style.Theme_App_Starting)
         }
 
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         viewModel.showSplashScreen()
 
         lifecycleScope.launch {
@@ -61,23 +62,35 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        if (!uiState.isLoading) {
-            setContent {
-                LeboncoinAppTheme {
-                    AppContent()
+        // if (!uiState.isLoading) {
+        setContent {
+            LeboncoinAppTheme {
+                AppContent {
+                    keepSplashOpen = false
                 }
             }
         }
+        // }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppContent() {
+fun AppContent(onDataLoaded: () -> Unit) {
     val navController = rememberNavController()
     var isLoading by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val mainViewModel: MainViewModel = hiltViewModel()
+
+    LaunchedEffect(key1 = Unit) {
+        onDataLoaded()
+    }
+
+    mainViewModel.loadAlbums()
+
+    // Log.e("TAG", "AppContent: ${mainViewModel._uiState.collectAsState().value}" )
 
     Scaffold { innerPadding ->
         LeboncoinNavHost(

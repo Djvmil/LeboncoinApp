@@ -9,7 +9,7 @@ import com.sideproject.domain.models.album.Album
 @Entity(tableName = Constants.ALBUM_TABLE)
 data class AlbumEntity(
     @PrimaryKey
-    var id: Int? = null,
+    var id: Int,
     var albumId: Int? = null,
     var title: String? = null,
     var url: String? = null,

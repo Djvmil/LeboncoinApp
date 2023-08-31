@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.sideproject.leboncoinapp.ui.detail.DetailScreen
+import com.sideproject.leboncoinapp.ui.home.HomeScreen
 
 @Composable
 fun LeboncoinNavHost(
@@ -14,12 +16,13 @@ fun LeboncoinNavHost(
     onLoadindEvent: (Boolean) -> Unit,
     onNavigationEvent: (LeboncoinDestination) -> Unit,
 ) {
-    NavHost(navController = navHostController, startDestination = Home.route, modifier = Modifier) {
-        composable(Home.route){
-
+    NavHost(navController = navHostController, startDestination = Home.route, modifier = modifier) {
+        composable(Home.route) {
+            HomeScreen()
         }
-        composable(Detail.route){
 
+        composable(Detail.route) {
+            DetailScreen()
         }
     }
 }

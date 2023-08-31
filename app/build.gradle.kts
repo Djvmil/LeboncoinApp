@@ -64,12 +64,20 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
+    implementation("androidx.paging:paging-runtime-ktx:3.2.0")
+    implementation("androidx.paging:paging-compose:3.2.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.airbnb.android:lottie-compose:4.0.0")
 
     // Domain and Data module
     implementation(project(":domain"))
     implementation(project(":data"))
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // DI
     implementation("com.google.dagger:hilt-android:2.45")
