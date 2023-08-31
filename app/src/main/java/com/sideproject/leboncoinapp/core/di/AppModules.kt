@@ -1,8 +1,6 @@
 package com.sideproject.leboncoinapp.core.di
 
-import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
 import com.sideproject.data.album.local.dao.AlbumDao
 import com.sideproject.data.album.remote.api.AlbumAPIService
@@ -11,8 +9,6 @@ import com.sideproject.data.album.repository.AlbumRemoteDataRepositoryImpl
 import com.sideproject.domain.repository.album.AlbumLocalRepository
 import com.sideproject.domain.repository.album.AlbumRemoteRepository
 import com.sideproject.leboncoinapp.core.constants.Constants
-import com.sideproject.leboncoinapp.core.shareprefs.LeboncoinSharedPrefs
-import com.sideproject.leboncoinapp.core.shareprefs.LeboncoinSharedPrefsImpl
 import com.sideproject.leboncoinapp.database.AlbumCallBack
 import com.sideproject.leboncoinapp.database.LeboncoinAppDatabase
 import dagger.Module
@@ -58,16 +54,6 @@ class AppModules {
     @Provides
     fun provideAlbumRemoteDataRepository(albumRemoteDataRepositoryImpl: AlbumRemoteDataRepositoryImpl): AlbumRemoteRepository {
         return albumRemoteDataRepositoryImpl
-    }
-
-    @Provides
-    fun provideSharedPrefs(application: Application): SharedPreferences {
-        return application.getSharedPreferences(Constants.SHARE_PREFS_NAME, Context.MODE_PRIVATE)
-    }
-
-    @Provides
-    fun provideLeboncoinSharePrefs(sharedPreferences: SharedPreferences): LeboncoinSharedPrefs {
-        return LeboncoinSharedPrefsImpl(sharedPreferences)
     }
 
     @Provides

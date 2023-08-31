@@ -60,7 +60,7 @@ fun AlbumCard(album: Album, onNavigationEvent: (LeboncoinDestination) -> Unit) {
         modifier = Modifier.padding(10.dp)
             .fillMaxWidth()
             .wrapContentHeight().clickable {
-               onNavigationEvent(Detail)
+                onNavigationEvent(Detail)
             },
         shape = MaterialTheme.shapes.medium,
     ) {
