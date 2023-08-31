@@ -18,11 +18,19 @@ fun LeboncoinNavHost(
 ) {
     NavHost(navController = navHostController, startDestination = Home.route, modifier = modifier) {
         composable(Home.route) {
-            HomeScreen()
+            HomeScreen(
+                isLoadind,
+                onLoadindEvent,
+                onNavigationEvent,
+            )
         }
 
         composable(Detail.route) {
-            DetailScreen()
+            DetailScreen(
+                isLoadind,
+                onLoadindEvent,
+                onNavigationEvent,
+            )
         }
     }
 }

@@ -2,10 +2,4 @@
 <resources>
     <style name="Theme.LeboncoinApp" parent="Theme.AppCompat.Light" />
 
-    <style name="Theme.App.Starting" parent="Theme.LeboncoinApp">
-        <item name="android:windowBackground">@color/white</item>
-        <item name="android:windowFullscreen">true</item>
-    </style>
-
-
 </resources>

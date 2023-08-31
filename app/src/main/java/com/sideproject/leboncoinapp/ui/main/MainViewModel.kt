@@ -1,6 +1,5 @@
 package com.sideproject.leboncoinapp.ui.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -24,7 +23,7 @@ class MainViewModel @Inject constructor(
     private val useCase: GetAlbumsUseCase,
 ) : ViewModel() {
     companion object {
-        private val SPLASHSCREEN_DURATION: Long = 1000
+        private val SPLASHSCREEN_DURATION: Long = 3000
     }
 
     val albumsPagingSource: Flow<PagingData<Album>> = useCase.callLocal().cachedIn(viewModelScope)
@@ -32,10 +31,14 @@ class MainViewModel @Inject constructor(
     private val uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val _uiState = uiState.asStateFlow()
 
+    private val isLaunchSplachScreen = MutableStateFlow(true)
+    val _isLaunchSplachScreen = isLaunchSplachScreen.asStateFlow()
+
     fun showSplashScreen() {
         viewModelScope.launch(Dispatchers.IO) {
             delay(SPLASHSCREEN_DURATION)
             loadAlbums()
+            isLaunchSplachScreen.value = false
         }
     }
 

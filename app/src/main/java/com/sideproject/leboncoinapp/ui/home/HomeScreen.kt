@@ -1,5 +1,6 @@
 package com.sideproject.leboncoinapp.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,9 +26,15 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.sideproject.domain.models.album.Album
 import com.sideproject.leboncoinapp.ui.main.MainViewModel
+import com.sideproject.leboncoinapp.ui.navigation.Detail
+import com.sideproject.leboncoinapp.ui.navigation.LeboncoinDestination
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    isLoading: Boolean,
+    onLoadingEvent: (Boolean) -> Unit,
+    onNavigationEvent: (LeboncoinDestination) -> Unit,
+) {
     val mainViewModel: MainViewModel = hiltViewModel()
 
     val albumLazyItems = mainViewModel.albumsPagingSource.collectAsLazyPagingItems()
@@ -42,17 +49,19 @@ fun HomeScreen() {
             contentType = albumLazyItems.itemContentType { "Albums" },
         ) { index: Int ->
             val album = albumLazyItems[index] ?: return@items
-            AlbumCard(album)
+            AlbumCard(album, onNavigationEvent)
         }
     }
 }
 
 @Composable
-fun AlbumCard(album: Album) {
+fun AlbumCard(album: Album, onNavigationEvent: (LeboncoinDestination) -> Unit) {
     Card(
         modifier = Modifier.padding(10.dp)
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight().clickable {
+               onNavigationEvent(Detail)
+            },
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -80,5 +89,5 @@ fun AlbumCard(album: Album) {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    // HomeScreen()
 }

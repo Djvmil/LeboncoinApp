@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -33,7 +31,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var splashScreen: SplashScreen
-    private var keepSplashOpen = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= 31) {
@@ -58,39 +55,25 @@ class MainActivity : ComponentActivity() {
     private fun handleUiState(uiState: MainUiState) {
         if (Build.VERSION.SDK_INT >= 31) {
             splashScreen.setKeepOnScreenCondition {
-                this.keepSplashOpen
+                viewModel._isLaunchSplachScreen.value
             }
         }
 
-        // if (!uiState.isLoading) {
         setContent {
             LeboncoinAppTheme {
-                AppContent {
-                    keepSplashOpen = false
-                }
+                AppContent(uiState)
             }
         }
-        // }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppContent(onDataLoaded: () -> Unit) {
+fun AppContent(uiState: MainUiState) {
     val navController = rememberNavController()
     var isLoading by rememberSaveable {
         mutableStateOf(false)
     }
-
-    val mainViewModel: MainViewModel = hiltViewModel()
-
-    LaunchedEffect(key1 = Unit) {
-        onDataLoaded()
-    }
-
-    mainViewModel.loadAlbums()
-
-    // Log.e("TAG", "AppContent: ${mainViewModel._uiState.collectAsState().value}" )
 
     Scaffold { innerPadding ->
         LeboncoinNavHost(
@@ -104,7 +87,7 @@ fun AppContent(onDataLoaded: () -> Unit) {
             },
         )
 
-        if (isLoading) {
+        if (isLoading || uiState.isLoading) {
             LoaderScreen()
         }
     }
