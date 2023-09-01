@@ -1,5 +1,6 @@
 package com.sideproject.leboncoinapp.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,42 +15,57 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.sideproject.domain.models.album.Album
-import com.sideproject.leboncoinapp.ui.main.MainViewModel
+import com.sideproject.domain.models.album.Resource
+import com.sideproject.leboncoinapp.ui.main.LoaderScreen
+import com.sideproject.leboncoinapp.ui.main.MainActivity
 import com.sideproject.leboncoinapp.ui.navigation.Detail
 import com.sideproject.leboncoinapp.ui.navigation.LeboncoinDestination
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun HomeScreen(
-    isLoading: Boolean,
-    onLoadingEvent: (Boolean) -> Unit,
     onNavigationEvent: (LeboncoinDestination) -> Unit,
 ) {
-    val mainViewModel: MainViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
 
-    val albumLazyItems = mainViewModel.albumsPagingSource.collectAsLazyPagingItems()
+    HomeContent(homeViewModel._uiState, onNavigationEvent)
+}
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        items(
-            count = albumLazyItems.itemCount,
-            key = albumLazyItems.itemKey(Album::id),
-            contentType = albumLazyItems.itemContentType { "Albums" },
-        ) { index: Int ->
-            val album = albumLazyItems[index] ?: return@items
-            AlbumCard(album, onNavigationEvent)
+@Composable
+fun HomeContent(
+    albumState: StateFlow<Resource<List<Album>>>,
+    onNavigationEvent: (LeboncoinDestination) -> Unit,
+) {
+    when (val _albumState = albumState.collectAsState().value) {
+        is Resource.Loading -> {
+            Log.e("TAG", "HomeScreen: Loadin ")
+            LoaderScreen()
+        }
+        is Resource.Success -> {
+            Log.e("TAG", "HomeScreen: Succes ")
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                items(
+                    count = _albumState.data.size,
+                ) { index: Int ->
+                    AlbumCard(_albumState.data[index], onNavigationEvent)
+                }
+            }
+        }
+        else -> {
+            Log.d(MainActivity.TAG, "handleUiState: Resource.Error or Resource.Finish")
+            Log.e("TAG", "HomeScreen: Else ")
         }
     }
 }

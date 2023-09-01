@@ -5,8 +5,6 @@ import com.sideproject.leboncoinapp.ui.navigation.LeboncoinDestination
 
 @Composable
 fun DetailScreen(
-    isLoading: Boolean,
-    onLoadingEvent: (Boolean) -> Unit,
     onNavigationEvent: (LeboncoinDestination) -> Unit,
 ) {
 }

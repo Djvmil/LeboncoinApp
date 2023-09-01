@@ -3,11 +3,18 @@ package com.sideproject.leboncoinapp.core.di
 import android.content.Context
 import androidx.room.Room
 import com.sideproject.data.album.local.dao.AlbumDao
+import com.sideproject.data.album.remote.RemoteDataSourceImpl
 import com.sideproject.data.album.remote.api.AlbumAPIService
-import com.sideproject.data.album.repository.AlbumLocalDataRepositoryImpl
-import com.sideproject.data.album.repository.AlbumRemoteDataRepositoryImpl
-import com.sideproject.domain.repository.album.AlbumLocalRepository
-import com.sideproject.domain.repository.album.AlbumRemoteRepository
+import com.sideproject.data.album.repository.AlbumDataRepositoryImpl
+import com.sideproject.data.album.usecase.CheckIfAlbumEmptyUseCaseImpl
+import com.sideproject.data.album.usecase.GetLocalAlbumsUseCaseImpl
+import com.sideproject.data.album.usecase.GetRemoteAlbumsUseCaseImpl
+import com.sideproject.data.album.usecase.SaveAlbumsUseCaseImpl
+import com.sideproject.domain.repository.album.AlbumDataRepository
+import com.sideproject.domain.source.RemoteDataSource
+import com.sideproject.domain.usecase.CheckIfAlbumEmptyUseCase
+import com.sideproject.domain.usecase.GetAlbumsUseCase
+import com.sideproject.domain.usecase.SaveAlbumsUseCase
 import com.sideproject.leboncoinapp.core.constants.Constants
 import com.sideproject.leboncoinapp.database.AlbumCallBack
 import com.sideproject.leboncoinapp.database.LeboncoinAppDatabase
@@ -47,13 +54,35 @@ class AppModules {
     }
 
     @Provides
-    fun provideAlbumLocalDataRepository(albumLocalDataRepositoryImpl: AlbumLocalDataRepositoryImpl): AlbumLocalRepository {
-        return albumLocalDataRepositoryImpl
+    fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource {
+        return remoteDataSourceImpl
     }
 
     @Provides
-    fun provideAlbumRemoteDataRepository(albumRemoteDataRepositoryImpl: AlbumRemoteDataRepositoryImpl): AlbumRemoteRepository {
-        return albumRemoteDataRepositoryImpl
+    fun provideAlbumDataRepository(albumDataRepositoryImpl: AlbumDataRepositoryImpl): AlbumDataRepository {
+        return albumDataRepositoryImpl
+    }
+
+    @Provides
+    fun provideCheckIfAlbumEmptyUseCase(checkIfAlbumEmptyUseCaseImpl: CheckIfAlbumEmptyUseCaseImpl): CheckIfAlbumEmptyUseCase {
+        return checkIfAlbumEmptyUseCaseImpl
+    }
+
+    @GetLocalAlbumsUseCase
+    @Provides
+    fun provideGetLocalAlbumsUseCaseImpl(getLocalAlbumsUseCaseImpl: GetLocalAlbumsUseCaseImpl): GetAlbumsUseCase {
+        return getLocalAlbumsUseCaseImpl
+    }
+
+    @GetRemoteAlbumsUseCase
+    @Provides
+    fun provideGetRemoteAlbumsUseCase(getRemoteAlbumsUseCaseImpl: GetRemoteAlbumsUseCaseImpl): GetAlbumsUseCase {
+        return getRemoteAlbumsUseCaseImpl
+    }
+
+    @Provides
+    fun provideSaveAlbumsUseCase(saveAlbumsUseCaseImpl: SaveAlbumsUseCaseImpl): SaveAlbumsUseCase {
+        return saveAlbumsUseCaseImpl
     }
 
     @Provides
@@ -66,7 +95,7 @@ class AppModules {
 
     @Provides
     @Singleton
-    fun provideClient(@ApplicationContext context: Context): OkHttpClient = OkHttpClient.Builder()
+    fun provideClient(): OkHttpClient = OkHttpClient.Builder()
         .build()
 
     @Provides

@@ -2,6 +2,7 @@ package com.sideproject.leboncoinapp.ui.main
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -9,10 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -21,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.sideproject.domain.models.album.Resource
 import com.sideproject.leboncoinapp.R
 import com.sideproject.leboncoinapp.ui.navigation.LeboncoinNavHost
 import com.sideproject.leboncoinapp.ui.theme.LeboncoinAppTheme
@@ -52,43 +50,48 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun handleUiState(uiState: MainUiState) {
+    private fun handleUiState(uiState: Resource<Any>) {
         if (Build.VERSION.SDK_INT >= 31) {
             splashScreen.setKeepOnScreenCondition {
                 viewModel._isLaunchSplachScreen.value
             }
         }
-
         setContent {
             LeboncoinAppTheme {
                 AppContent(uiState)
             }
         }
     }
+
+    companion object {
+        const val TAG = "MainActivity"
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppContent(uiState: MainUiState) {
+fun AppContent(uiState: Resource<Any>) {
     val navController = rememberNavController()
-    var isLoading by rememberSaveable {
-        mutableStateOf(false)
-    }
 
-    Scaffold { innerPadding ->
-        LeboncoinNavHost(
-            navHostController = navController,
-            modifier = Modifier.padding(innerPadding),
-            onLoadindEvent = { showLoader ->
-                isLoading = showLoader
-            },
-            onNavigationEvent = { screen ->
-                navController.navigate(screen.route)
-            },
-        )
-
-        if (isLoading || uiState.isLoading) {
+    when (uiState) {
+        is Resource.Loading -> {
+            Log.e("TAG", "AppContent: InFinish Loader ")
             LoaderScreen()
+        }
+        is Resource.Finish -> {
+            Log.e("TAG", "AppContent: InFinish ")
+            Scaffold { innerPadding ->
+                LeboncoinNavHost(
+                    navHostController = navController,
+                    modifier = Modifier.padding(innerPadding),
+                    onNavigationEvent = { screen ->
+                        navController.navigate(screen.route)
+                    },
+                )
+            }
+        }
+        else -> {
+            Log.d(MainActivity.TAG, "handleUiState: Resource.Error or Success")
         }
     }
 }

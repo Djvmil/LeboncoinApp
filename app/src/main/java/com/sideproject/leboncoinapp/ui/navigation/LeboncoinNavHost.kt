@@ -12,25 +12,15 @@ import com.sideproject.leboncoinapp.ui.home.HomeScreen
 fun LeboncoinNavHost(
     navHostController: NavHostController,
     modifier: Modifier,
-    isLoadind: Boolean = false,
-    onLoadindEvent: (Boolean) -> Unit,
     onNavigationEvent: (LeboncoinDestination) -> Unit,
 ) {
     NavHost(navController = navHostController, startDestination = Home.route, modifier = modifier) {
         composable(Home.route) {
-            HomeScreen(
-                isLoadind,
-                onLoadindEvent,
-                onNavigationEvent,
-            )
+            HomeScreen(onNavigationEvent)
         }
 
         composable(Detail.route) {
-            DetailScreen(
-                isLoadind,
-                onLoadindEvent,
-                onNavigationEvent,
-            )
+            DetailScreen(onNavigationEvent)
         }
     }
 }
