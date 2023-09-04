@@ -5,14 +5,17 @@ import androidx.room.Room
 import com.sideproject.data.album.local.dao.AlbumDao
 import com.sideproject.data.album.remote.RemoteDataSourceImpl
 import com.sideproject.data.album.remote.api.AlbumAPIService
+import com.sideproject.data.album.remote.api.RequestInterceptor
 import com.sideproject.data.album.repository.AlbumDataRepositoryImpl
 import com.sideproject.data.album.usecase.CheckIfAlbumEmptyUseCaseImpl
+import com.sideproject.data.album.usecase.FindAlbumUseCaseImpl
 import com.sideproject.data.album.usecase.GetLocalAlbumsUseCaseImpl
 import com.sideproject.data.album.usecase.GetRemoteAlbumsUseCaseImpl
 import com.sideproject.data.album.usecase.SaveAlbumsUseCaseImpl
 import com.sideproject.domain.repository.album.AlbumDataRepository
 import com.sideproject.domain.source.RemoteDataSource
 import com.sideproject.domain.usecase.CheckIfAlbumEmptyUseCase
+import com.sideproject.domain.usecase.FindAlbumUseCase
 import com.sideproject.domain.usecase.GetAlbumsUseCase
 import com.sideproject.domain.usecase.SaveAlbumsUseCase
 import com.sideproject.leboncoinapp.core.constants.Constants
@@ -81,6 +84,11 @@ class AppModules {
     }
 
     @Provides
+    fun provideFindAlbumUseCase(findAlbumUseCaseImpl: FindAlbumUseCaseImpl): FindAlbumUseCase {
+        return findAlbumUseCaseImpl
+    }
+
+    @Provides
     fun provideSaveAlbumsUseCase(saveAlbumsUseCaseImpl: SaveAlbumsUseCaseImpl): SaveAlbumsUseCase {
         return saveAlbumsUseCaseImpl
     }
@@ -96,6 +104,7 @@ class AppModules {
     @Provides
     @Singleton
     fun provideClient(): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(RequestInterceptor())
         .build()
 
     @Provides

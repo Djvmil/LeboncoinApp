@@ -27,13 +27,12 @@ import com.sideproject.domain.models.album.Album
 import com.sideproject.domain.models.album.Resource
 import com.sideproject.leboncoinapp.ui.main.LoaderScreen
 import com.sideproject.leboncoinapp.ui.main.MainActivity
-import com.sideproject.leboncoinapp.ui.navigation.Detail
-import com.sideproject.leboncoinapp.ui.navigation.LeboncoinDestination
+import com.sideproject.leboncoinapp.ui.navigation.Details
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun HomeScreen(
-    onNavigationEvent: (LeboncoinDestination) -> Unit,
+    onNavigationEvent: (String) -> Unit,
 ) {
     val homeViewModel: HomeViewModel = hiltViewModel()
 
@@ -43,15 +42,13 @@ fun HomeScreen(
 @Composable
 fun HomeContent(
     albumState: StateFlow<Resource<List<Album>>>,
-    onNavigationEvent: (LeboncoinDestination) -> Unit,
+    onNavigationEvent: (String) -> Unit,
 ) {
     when (val _albumState = albumState.collectAsState().value) {
         is Resource.Loading -> {
-            Log.e("TAG", "HomeScreen: Loadin ")
             LoaderScreen()
         }
         is Resource.Success -> {
-            Log.e("TAG", "HomeScreen: Succes ")
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -71,12 +68,12 @@ fun HomeContent(
 }
 
 @Composable
-fun AlbumCard(album: Album, onNavigationEvent: (LeboncoinDestination) -> Unit) {
+fun AlbumCard(album: Album, onNavigationEvent: (String) -> Unit) {
     Card(
         modifier = Modifier.padding(10.dp)
             .fillMaxWidth()
             .wrapContentHeight().clickable {
-                onNavigationEvent(Detail)
+                onNavigationEvent("${Details.route}/${album.id}")
             },
         shape = MaterialTheme.shapes.medium,
     ) {

@@ -8,6 +8,8 @@ object Home : LeboncoinDestination {
     override val route = "home"
 }
 
-object Detail : LeboncoinDestination {
-    override val route = "detail"
+object Details : LeboncoinDestination {
+    const val routeWithArgument: String = "details/{albumId}"
+    const val argument0: String = "albumId"
+    override val route = "details"
 }

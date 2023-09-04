@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -27,7 +28,10 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: MainViewModel by viewModels()
+
+    @VisibleForTesting
+    internal val viewModel: MainViewModel by viewModels()
+
     private lateinit var splashScreen: SplashScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,17 +79,15 @@ fun AppContent(uiState: Resource<Any>) {
 
     when (uiState) {
         is Resource.Loading -> {
-            Log.e("TAG", "AppContent: InFinish Loader ")
             LoaderScreen()
         }
         is Resource.Finish -> {
-            Log.e("TAG", "AppContent: InFinish ")
             Scaffold { innerPadding ->
                 LeboncoinNavHost(
                     navHostController = navController,
                     modifier = Modifier.padding(innerPadding),
-                    onNavigationEvent = { screen ->
-                        navController.navigate(screen.route)
+                    onNavigationEvent = { route ->
+                        navController.navigate(route)
                     },
                 )
             }

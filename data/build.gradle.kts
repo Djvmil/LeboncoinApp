@@ -46,7 +46,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // DI
-    implementation("com.google.dagger:hilt-android:2.45")
+    implementation("com.google.dagger:hilt-android:2.46.1")
     kapt("com.google.dagger:hilt-android-compiler:2.45")
 
     // Database

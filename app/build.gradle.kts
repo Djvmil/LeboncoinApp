@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.sideproject.leboncoinapp.AppTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -50,6 +50,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    hilt {
+        enableTransformForLocalTests = true
+    }
 }
 
 dependencies {
@@ -80,7 +83,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // DI
-    implementation("com.google.dagger:hilt-android:2.45")
+    implementation("com.google.dagger:hilt-android:2.46.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-android-compiler:2.45")
 
@@ -96,9 +99,28 @@ dependencies {
     testImplementation("androidx.room:room-testing:$room_version")
 
     // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:$room_version"){
+    implementation("androidx.room:room-paging:$room_version") {
         because("bggbjhbhjbhj")
     }
+
+    // unit test
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation("org.mockito:mockito-inline:3.3.3")
+    testImplementation("app.cash.turbine:turbine:0.2.0")
+
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+    // For Robolectric tests.
+    testImplementation("com.google.dagger:hilt-android-testing:2.46.1")
+    // ...with Kotlin.
+    kaptTest("com.google.dagger:hilt-android-compiler:2.45")
+    // For instrumented tests.
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.46.1")
+    // ...with Kotlin.
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.45")
+
+    androidTestImplementation("com.google.truth:truth:1.0.1")
+    testImplementation ("org.robolectric:robolectric:4.9")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
