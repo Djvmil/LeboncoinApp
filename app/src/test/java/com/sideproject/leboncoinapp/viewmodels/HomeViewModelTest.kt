@@ -1,8 +1,9 @@
-package com.sideproject.leboncoinapp
+package com.sideproject.leboncoinapp.viewmodels
 
 import com.sideproject.data.album.entity.toAlbum
 import com.sideproject.domain.models.album.Resource
 import com.sideproject.domain.usecase.GetAlbumsUseCase
+import com.sideproject.leboncoinapp.MainCoroutinesRule
 import com.sideproject.leboncoinapp.MockTestUtil.mockAlbumList
 import com.sideproject.leboncoinapp.ui.home.HomeViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
