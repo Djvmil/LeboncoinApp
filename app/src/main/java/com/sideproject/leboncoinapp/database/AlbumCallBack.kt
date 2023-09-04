@@ -29,7 +29,7 @@ class AlbumCallBack(
     }
 }
 
-fun fakeDatas() = arrayListOf(
+fun fakeDatas() = listOf(
     AlbumEntity(
         albumId = 1,
         id = 1,

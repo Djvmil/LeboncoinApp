@@ -1,11 +1,13 @@
 package com.sideproject.leboncoinapp.persistence
 
 import com.sideproject.data.album.local.dao.AlbumDao
+import com.sideproject.leboncoinapp.MainCoroutinesRule
 import com.sideproject.leboncoinapp.MockTestUtil.mockAlbumList
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -14,6 +16,8 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class AlbumDaoTest : LocalDatabase() {
 
+    @get:Rule
+    val coroutinesRule = MainCoroutinesRule()
     private lateinit var albumDao: AlbumDao
 
     @Before
@@ -22,7 +26,7 @@ class AlbumDaoTest : LocalDatabase() {
     }
 
     @Test
-    fun insertAndLoadAlbumListTest() = runTest {
+    fun insertAndLoadAlbumListTest() = coroutinesRule.testScope.runTest {
         val mockDataList = mockAlbumList()
 
         if (albumDao.isEmpty()) {
